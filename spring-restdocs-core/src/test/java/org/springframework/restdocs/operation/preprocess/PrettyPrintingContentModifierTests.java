@@ -76,6 +76,13 @@ public class PrettyPrintingContentModifierTests {
 	}
 
 	@Test
+	public void xmlWithDoctypeIsRejected() {
+		String content = "<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>";
+		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
+			.isEqualTo(content.getBytes());
+	}
+
+	@Test
 	public void encodingIsPreserved() throws Exception {
 		Map<String, String> input = new HashMap<>();
 		input.put("japanese", "\u30b3\u30f3\u30c6\u30f3\u30c4");

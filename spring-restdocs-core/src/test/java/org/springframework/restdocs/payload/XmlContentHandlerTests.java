@@ -84,6 +84,13 @@ public class XmlContentHandlerTests {
 			.isThrownBy(() -> createHandler("non-XML content", Collections.emptyList()));
 	}
 
+	@Test
+	public void xmlWithDoctypeIsRejected() {
+		assertThatExceptionOfType(PayloadHandlingException.class).isThrownBy(
+				() -> createHandler("<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>",
+						Collections.emptyList()));
+	}
+
 	private XmlContentHandler createHandler(String xml, List<FieldDescriptor> descriptors) {
 		return new XmlContentHandler(xml.getBytes(), descriptors);
 	}

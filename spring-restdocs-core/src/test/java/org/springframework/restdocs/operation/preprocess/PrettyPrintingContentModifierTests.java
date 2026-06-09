@@ -86,4 +86,11 @@ class PrettyPrintingContentModifierTests {
 		assertThat(output).isEqualTo(input);
 	}
 
+	@Test
+	void xmlWithDoctypeIsRejected() {
+		String content = "<!DOCTYPE foo [<!ENTITY xxe SYSTEM \"file:///etc/passwd\">]><foo>&xxe;</foo>";
+		assertThat(new PrettyPrintingContentModifier().modifyContent(content.getBytes(), null))
+			.isEqualTo(content.getBytes());
+	}
+
 }

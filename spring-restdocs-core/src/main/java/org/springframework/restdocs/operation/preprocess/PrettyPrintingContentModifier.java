@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -81,7 +82,10 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 		@Override
 		public byte[] prettyPrint(byte[] original) throws Exception {
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+			transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
+			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
@@ -94,6 +98,9 @@ public class PrettyPrintingContentModifier implements ContentModifier {
 
 		private SAXSource createSaxSource(byte[] original) throws ParserConfigurationException, SAXException {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+			parserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			parserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			parserFactory.setXIncludeAware(false);
 			SAXParser parser = parserFactory.newSAXParser();
 			XMLReader xmlReader = parser.getXMLReader();
 			xmlReader.setErrorHandler(new SilentErrorHandler());

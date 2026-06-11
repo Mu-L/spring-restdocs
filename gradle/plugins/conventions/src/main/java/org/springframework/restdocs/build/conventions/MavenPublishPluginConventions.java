@@ -79,6 +79,7 @@ class MavenPublishPluginConventions extends Conventions<MavenPublishPlugin> {
 				options.setAuthor(true);
 				options.header("Spring REST Docs " + getProject().getVersion());
 				options.docTitle(options.getHeader() + " API");
+				options.addBooleanOption("-no-fonts", true);
 				options.addStringOption("-quiet");
 				options.encoding("UTF-8");
 				options.source("17");
